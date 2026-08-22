@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1/tickets'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://irctc-booking-system-production.up.railway.app/api/v1/tickets'
 
 async function request(url, options = {}) {
   const response = await fetch(url, {

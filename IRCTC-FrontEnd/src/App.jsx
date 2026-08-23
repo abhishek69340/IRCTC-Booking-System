@@ -114,7 +114,7 @@ function App() {
       {view === 'home' && <>
         <section className="hero">
           <div className="hero-copy">
-            <div className="eyebrow"><Sparkles/> INDIA'S JOURNEY, REIMAGINED</div>
+            <div className="eyebrow"> INDIA'S JOURNEY, REIMAGINED</div>
             <h1>Travel smarter.<br/><span>Journey</span> with confidence.</h1>
             <div className="accent-line" />
             <p>Book train tickets, check PNR status,<br/>and manage your journeys — all in one place.</p>
@@ -129,7 +129,6 @@ function App() {
           <ActiveCard tickets={active} go={go}/>
           <RecentCard recent={recent} go={go}/>
         </section>
-        <Stats/>
         {pnrResult && <section className="result-wrap"><div className="section-title"><span>PNR RESULT</span><h2>Journey details</h2></div><TicketCard ticket={pnrResult}/></section>}
       </>}
 
@@ -160,16 +159,242 @@ function BookingCard({ form, updateForm, passengers, updatePassenger, addPasseng
     <button className="search-trains" disabled={loading}>{loading ? <><span className="spinner"/> Booking...</> : <>Book Train <ArrowRight/></>}</button>
   </form>
 }
-function Field({label,icon,children}) { return <label className="field"><span>{icon}{label}</span>{children}</label> }
-function PnrCard({pnr,setPnr,search,loading,large=false}) { return <aside className={`pnr glass ${large?'large':''}`}><div className="card-title"><span className="icon orange"><Search/></span><div><small>LIVE LOOKUP</small><h3>Check PNR status</h3></div></div><form onSubmit={search} className="pnr-form"><input value={pnr} onChange={e=>setPnr(e.target.value.replace(/\D/g,'').slice(0,10))} placeholder="Enter 10 digit PNR" inputMode="numeric"/><button disabled={loading}>{loading?'Checking':'Check Status'}</button></form><div className="pnr-points"><Point c="orange" icon={<RotateCcw/>}>Get instant PNR status</Point><Point c="blue" icon={<Ticket/>}>View journey details</Point><Point c="green" icon={<CheckCircle2/>}>Check seat & ticket info</Point><Point c="purple" icon={<TrainFront/>}>Live train running status</Point></div></aside> }
-function Point({c,icon,children}) { return <div><span className={`point ${c}`}>{icon}</span>{children}</div> }
-function BenefitsCard(){ return <article className="benefits glass"><div className="mini-title"><ShieldCheck/> WHY BOOK WITH IRCTC?</div><div className="benefits-grid"><Benefit icon="⚙" text="Official partner of Indian Railways"/><Benefit icon="♧" text="Secure & easy booking"/><Benefit icon="▤" text="Multiple payment options"/><Benefit icon="♧" text="24x7 customer support"/><Benefit icon="✣" text="Trusted by millions of travelers"/></div></article> }
-function Benefit({icon,text}) { return <div><b>{icon}</b><span>{text}</span></div> }
-function ActiveCard({tickets,go}){ const t=tickets[0]; return <article className="active-card glass"><div className="mini-title"><TrainFront/> ACTIVE JOURNEYS <button onClick={()=>go('active')}>View All</button></div>{t?<TicketCard ticket={t} compact/>:<Empty text="No active tickets found."/>}</article> }
-function RecentCard({recent,go}){ return <article className="recent-card glass"><div className="mini-title"><Ticket/> RECENT BOOKINGS <button onClick={()=>go('history')}>View All</button></div>{recent.length?recent.map(t=><div className="recent-row" key={t.ticketId||t.pnrNumber}><div><strong>{t.pnrNumber}</strong><span>{t.trainNumber} · {t.fromStation||'Origin'} → {t.toStation||'Destination'}</span><small>{formatDate(t.journeyDate)} · {formatTime(t.departureTime)}</small></div><em className={t.status?.toLowerCase()==='booked'?'ok':'bad'}>{t.status||'BOOKED'}</em></div>):<Empty text="No recent bookings."/>}</article> }
-function Stats(){ return <div className="stats"><div><TrainFront/><strong>15000+</strong><span>Daily Trains</span></div><div><Users/><strong>500000+</strong><span>Happy Customers</span></div><div><ShieldCheck/><strong>100%</strong><span>Secure Booking</span></div><div><Headphones/><strong>24×7</strong><span>Customer Support</span></div><blockquote>“The journey is the reward.” <small>— Indian Railways</small></blockquote></div> }
-function TicketCard({ticket}){ const ps=ticket.passengers||[]; return <article className="journey-card glass"><div className="journey-top"><div><small>PNR</small><strong className="pnr-green">{ticket.pnrNumber}</strong></div><em className="confirmed"><CheckCircle2/> {ticket.status||'BOOKED'}</em></div><div className="route-summary"><div><strong>{ticket.fromStation||'Origin'}</strong><small>Departure</small></div><div className="route-mid"><span>{ticket.trainNumber}</span><i></i><span>TRAIN</span></div><div className="right"><strong>{ticket.toStation||'Destination'}</strong><small>Arrival</small></div></div><div className="meta"><div><CalendarDays/><strong>{formatDate(ticket.journeyDate)}</strong><small>Journey</small></div><div><Clock3/><strong>{formatTime(ticket.departureTime)}</strong><small>Departure</small></div><div><Ticket/><strong>{ticket.trainNumber}</strong><small>Train</small></div><div><Users/><strong>{ps.length}</strong><small>Passengers</small></div></div></article> }
-function Empty({text}){ return <div className="empty"><Info/> {text}</div> }
-function Page({eyebrow,title,subtitle,children}){ return <section className="page"><div className="page-head"><span>{eyebrow}</span><h2>{title}</h2><p>{subtitle}</p></div>{children}</section> }
+function Field({label,icon,children}) {
+  return <label className="field"><span>{icon}{label}</span>{children}</label>
+}
+
+function PnrCard({pnr,setPnr,search,loading,large=false}) {
+  return <aside className={`pnr glass ${large?'large':''}`}>
+    <div className="card-title">
+      <span className="icon orange"><Search/></span>
+      <div>
+        <small>LIVE LOOKUP</small>
+        <h3>Check PNR status</h3>
+      </div>
+    </div>
+
+    <form onSubmit={search} className="pnr-form">
+      <input
+          value={pnr}
+          onChange={e=>setPnr(e.target.value.replace(/\D/g,'').slice(0,10))}
+          placeholder="Enter 10 digit PNR"
+          inputMode="numeric"
+      />
+      <button disabled={loading}>
+        {loading?'Checking':'Check Status'}
+      </button>
+    </form>
+
+    <div className="pnr-points">
+      <Point c="orange" icon={<RotateCcw/>}>Get instant PNR status</Point>
+      <Point c="blue" icon={<Ticket/>}>View journey details</Point>
+      <Point c="green" icon={<CheckCircle2/>}>Check seat & ticket info</Point>
+      <Point c="purple" icon={<TrainFront/>}>Live train running status</Point>
+    </div>
+  </aside>
+}
+
+function Point({c,icon,children}) {
+  return <div>
+    <span className={`point ${c}`}>{icon}</span>
+    {children}
+  </div>
+}
+
+function BenefitsCard(){
+  return <article className="benefits glass">
+    <div className="mini-title">
+      <ShieldCheck/> WHY BOOK WITH IRCTC?
+    </div>
+
+    <div className="benefits-grid">
+      <Benefit icon="⚙" text="Official partner of Indian Railways"/>
+      <Benefit icon="♧" text="Secure & easy booking"/>
+      <Benefit icon="▤" text="Multiple payment options"/>
+      <Benefit icon="♧" text="24x7 customer support"/>
+      <Benefit icon="✣" text="Trusted by millions of travelers"/>
+    </div>
+  </article>
+}
+
+function Benefit({icon,text}) {
+  return <div>
+    <b>{icon}</b>
+    <span>{text}</span>
+  </div>
+}
+
+function ActiveCard({tickets,go}){
+  const t=tickets[0]
+
+  return <article className="active-card glass">
+    <div className="mini-title">
+      <TrainFront/> ACTIVE JOURNEYS
+      <button onClick={()=>go('active')}>View All</button>
+    </div>
+
+    {t
+        ? <TicketCard ticket={t} compact/>
+        : <Empty text="No active tickets found."/>
+    }
+  </article>
+}
+
+function RecentCard({recent,go}){
+  return <article className="recent-card glass">
+    <div className="mini-title">
+      <Ticket/> RECENT BOOKINGS
+      <button onClick={()=>go('history')}>View All</button>
+    </div>
+
+    {recent.length
+        ? recent.map(t =>
+            <div className="recent-row" key={t.ticketId||t.pnrNumber}>
+              <div>
+                <strong>{t.pnrNumber}</strong>
+                <span>
+              {t.trainNumber} · {t.fromStation||'Origin'} → {t.toStation||'Destination'}
+            </span>
+                <small>
+                  {formatDate(t.journeyDate)} · {formatTime(t.departureTime)}
+                </small>
+              </div>
+
+              <em className={t.status?.toLowerCase()==='booked'?'ok':'bad'}>
+                {t.status||'BOOKED'}
+              </em>
+            </div>
+        )
+        : <Empty text="No recent bookings."/>
+    }
+  </article>
+}
+
+function Stats(){
+  return <div className="stats">
+    <div>
+      <TrainFront/>
+      <strong>15000+</strong>
+      <span>Daily Trains</span>
+    </div>
+
+    <div>
+      <Users/>
+      <strong>500000+</strong>
+      <span>Happy Customers</span>
+    </div>
+
+    <div>
+      <ShieldCheck/>
+      <strong>100%</strong>
+      <span>Secure Booking</span>
+    </div>
+
+    <div>
+      <Headphones/>
+      <strong>24×7</strong>
+      <span>Customer Support</span>
+    </div>
+
+    <blockquote>
+      “The journey is the reward.”
+      <small>— Indian Railways</small>
+    </blockquote>
+  </div>
+}
+
+function TicketCard({ticket}){
+  const ps=ticket.passengers||[]
+
+  return <article className="journey-card glass">
+
+    <div className="journey-top">
+      <div>
+        <small>PNR</small>
+        <strong className="pnr-green">{ticket.pnrNumber}</strong>
+      </div>
+
+      <em className="confirmed">
+        <CheckCircle2/> {ticket.status||'BOOKED'}
+      </em>
+    </div>
+
+    <div className="route-summary">
+      <div>
+        <strong>{ticket.fromStation||'Origin'}</strong>
+        <small>Departure</small>
+      </div>
+
+      <div className="route-mid">
+        <span>{ticket.trainNumber}</span>
+        <i></i>
+        <span>TRAIN</span>
+      </div>
+
+      <div className="right">
+        <strong>{ticket.toStation||'Destination'}</strong>
+        <small>Arrival</small>
+      </div>
+    </div>
+
+    <div className="meta">
+      <div>
+        <CalendarDays/>
+        <strong>{formatDate(ticket.journeyDate)}</strong>
+        <small>Journey</small>
+      </div>
+
+      <div>
+        <Clock3/>
+        <strong>{formatTime(ticket.departureTime)}</strong>
+        <small>Departure</small>
+      </div>
+
+      <div>
+        <Ticket/>
+        <strong>{ticket.trainNumber}</strong>
+        <small>Train</small>
+      </div>
+
+      <div>
+        <Users/>
+        <strong>{ps.length}</strong>
+        <small>Passengers</small>
+      </div>
+    </div>
+
+    {/* Passenger Names */}
+    {ps.length > 0 && (
+        <div className="passenger-names">
+          <Users />
+          <span>
+      <strong>Passengers:</strong> {ps.map((p, index) => (
+              <span key={index}>
+          {p.name}{index < ps.length - 1 ? ', ' : ''}
+        </span>
+          ))}
+    </span>
+        </div>
+    )}
+
+  </article>
+}
+
+function Empty({text}){
+  return <div className="empty">
+    <Info/> {text}
+  </div>
+}
+
+function Page({eyebrow,title,subtitle,children}){
+  return <section className="page">
+    <div className="page-head">
+      <span>{eyebrow}</span>
+      <h2>{title}</h2>
+      <p>{subtitle}</p>
+    </div>
+    {children}
+  </section>
+}
 
 export default App

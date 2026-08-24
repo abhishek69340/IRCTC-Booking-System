@@ -17,7 +17,7 @@ public class WebConfig {
                                 "http://localhost:5173",
                                 "http://localhost:5174",
                                 "https://irctcc.netlify.app",
-                                "https://irctc-booking-system-kqxu.vercel.app"
+                                "https://irctcc.vercel.app"
                         )
                         .allowedMethods(
                                 "GET",

@@ -1,48 +1,41 @@
 const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL ||
-    'https://YOUR-RAILWAY-BACKEND.up.railway.app'
-
-/*
- * Change only the endpoint paths below if your
- * Spring Boot controller uses different mappings.
- */
+    import.meta.env.VITE_API_URL ||
+    'https://irctc-booking-system-production.up.railway.app'
 
 async function request(
     endpoint,
     options = {}
 ) {
-  const response = await fetch(
-      `${API_BASE_URL}${endpoint}`,
-      {
-        ...options,
-        headers: {
-          'Content-Type': 'application/json',
-          ...(options.headers || {})
+    const response = await fetch(
+        `${API_BASE_URL}${endpoint}`,
+        {
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...(options.headers || {})
+            }
         }
-      }
-  )
+    )
 
-  const contentType =
-      response.headers.get('content-type') || ''
+    const contentType =
+        response.headers.get('content-type') || ''
 
-  const data = contentType.includes(
-      'application/json'
-  )
-      ? await response.json()
-      : await response.text()
+    const data = contentType.includes('application/json')
+        ? await response.json()
+        : await response.text()
 
-  if (!response.ok) {
-    const message =
-        typeof data === 'string'
-            ? data
-            : data?.message ||
-            data?.error ||
-            `Request failed with status ${response.status}`
+    if (!response.ok) {
+        const message =
+            typeof data === 'string'
+                ? data
+                : data?.message ||
+                data?.error ||
+                `Request failed with status ${response.status}`
 
-    throw new Error(message)
-  }
+        throw new Error(message)
+    }
 
-  return data
+    return data
 }
 
 /* =========================================================
@@ -50,13 +43,13 @@ async function request(
 ========================================================= */
 
 export async function bookTicket(ticketData) {
-  return request(
-      '/api/v1/tickets',
-      {
-        method: 'POST',
-        body: JSON.stringify(ticketData)
-      }
-  )
+    return request(
+        '/api/v1/tickets',
+        {
+            method: 'POST',
+            body: JSON.stringify(ticketData)
+        }
+    )
 }
 
 /* =========================================================
@@ -64,12 +57,12 @@ export async function bookTicket(ticketData) {
 ========================================================= */
 
 export async function getActiveTickets() {
-  return request(
-      '/api/v1/tickets/active',
-      {
-        method: 'GET'
-      }
-  )
+    return request(
+        '/api/v1/tickets/active',
+        {
+            method: 'GET'
+        }
+    )
 }
 
 /* =========================================================
@@ -77,12 +70,12 @@ export async function getActiveTickets() {
 ========================================================= */
 
 export async function getHistoryTickets() {
-  return request(
-      '/api/v1/tickets/history',
-      {
-        method: 'GET'
-      }
-  )
+    return request(
+        '/api/v1/tickets/history',
+        {
+            method: 'GET'
+        }
+    )
 }
 
 /* =========================================================
@@ -90,12 +83,12 @@ export async function getHistoryTickets() {
 ========================================================= */
 
 export async function getTicketByPnr(pnr) {
-  return request(
-      `/api/v1/tickets/pnr/${encodeURIComponent(pnr)}`,
-      {
-        method: 'GET'
-      }
-  )
+    return request(
+        `/api/v1/tickets/pnr/${encodeURIComponent(pnr)}`,
+        {
+            method: 'GET'
+        }
+    )
 }
 
 /* =========================================================
@@ -103,10 +96,10 @@ export async function getTicketByPnr(pnr) {
 ========================================================= */
 
 export async function deleteTicket(ticketId) {
-  return request(
-      `/api/v1/tickets/${ticketId}`,
-      {
-        method: 'DELETE'
-      }
-  )
+    return request(
+        `/api/v1/tickets/${ticketId}`,
+        {
+            method: 'DELETE'
+        }
+    )
 }

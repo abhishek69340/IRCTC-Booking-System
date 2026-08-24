@@ -1,15 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-/* =========================================================
-   ROOT VARIABLES
-========================================================= */
-
 :root {
     font-family: Inter, system-ui, sans-serif;
-
     color: #f7f8fa;
     background: #061017;
-
     font-synthesis: none;
 
     --orange: #ff6a00;
@@ -327,13 +321,12 @@ button:disabled {
 ========================================================= */
 
 /*
-   Increased from 590px to 680px.
-   This pushes the booking container lower
-   and gives the train more visible space.
+   Increased hero height so that the train remains visible
+   before the booking container.
 */
 
 .hero {
-    min-height: 680px;
+    min-height: 770px;
 
     display: flex;
 
@@ -1672,6 +1665,15 @@ button:disabled {
         width: 17px;
     }
 
+    /*
+       Keep the train visible on smaller desktop/tablet
+       while keeping the booking section below it.
+    */
+
+    .hero {
+        min-height: 700px;
+    }
+
     .hero h1 {
         font-size: 50px;
     }
@@ -1719,6 +1721,8 @@ button:disabled {
         min-height: 68px;
 
         padding: 8px 10px;
+
+        position: sticky;
     }
 
     .mobile-menu {
@@ -1796,8 +1800,8 @@ button:disabled {
     }
 
     /*
-       Important:
-       On mobile we don't force 680px hero height.
+       Mobile should NOT use the large desktop hero height.
+       This keeps the page usable on phones.
     */
 
     .hero {

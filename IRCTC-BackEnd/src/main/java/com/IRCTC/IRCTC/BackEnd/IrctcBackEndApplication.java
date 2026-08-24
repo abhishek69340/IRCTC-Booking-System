@@ -7,7 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class IrctcBackEndApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(IrctcBackEndApplication.class, args);
-	}
 
+		SpringApplication.run(
+				IrctcBackEndApplication.class,
+				args
+		);
+	}
 }

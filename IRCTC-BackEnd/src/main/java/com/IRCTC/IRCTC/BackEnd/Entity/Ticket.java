@@ -22,36 +22,81 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ticketId;
 
-    @Column(unique = true, nullable = false)
+
+    @Column(
+            unique = true,
+            nullable = false,
+            length = 10
+    )
     private String pnrNumber;
+
 
     @Column(nullable = false)
     private String fromStation;
 
+
     @Column(nullable = false)
     private String toStation;
+
 
     @Column(nullable = false)
     private LocalDate journeyDate;
 
+
     @Column(nullable = false)
     private LocalTime departureTime;
 
+
     @Builder.Default
-    private LocalDateTime bookingTimestamp = LocalDateTime.now();
+    @Column(nullable = false)
+    private LocalDateTime bookingTimestamp =
+            LocalDateTime.now();
+
 
     @Column(nullable = false)
     private String trainNumber;
 
+
     @Builder.Default
+    @Column(nullable = false)
     private String status = "BOOKED";
 
-    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<Passenger> passengers = new ArrayList<>();
 
-    public void addPassenger(Passenger passenger) {
+    /*
+     * One ticket can contain multiple passengers.
+     *
+     * Cascade ALL:
+     * Saving ticket saves passengers.
+     *
+     * orphanRemoval:
+     * Removing passengers from ticket removes them from DB.
+     */
+    @OneToMany(
+            mappedBy = "ticket",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private List<Passenger> passengers =
+            new ArrayList<>();
+
+
+    public void addPassenger(
+            Passenger passenger
+    ) {
+
         passengers.add(passenger);
+
         passenger.setTicket(this);
+    }
+
+
+    public void removePassenger(
+            Passenger passenger
+    ) {
+
+        passengers.remove(passenger);
+
+        passenger.setTicket(null);
     }
 }

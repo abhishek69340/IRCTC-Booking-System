@@ -75,3 +75,274 @@
     font-size: 15px;
     font-weight: 400;
 }
+/* =========================================================
+   TICKET HISTORY + DELETE
+========================================================= */
+
+.ticket-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.delete-ticket {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    border: 1px solid rgba(255, 80, 80, 0.35);
+    border-radius: 10px;
+
+    background: rgba(255, 55, 55, 0.08);
+    color: #ff7373;
+
+    padding: 9px 13px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+            transform 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease;
+}
+
+.delete-ticket:hover {
+    background: rgba(255, 55, 55, 0.17);
+    border-color: rgba(255, 80, 80, 0.65);
+    transform: translateY(-1px);
+}
+
+.delete-ticket:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   HISTORY STATUS
+========================================================= */
+
+.history-status {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 5px 9px;
+
+    border-radius: 7px;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    color: #aeb7c7;
+
+    background: rgba(148, 163, 184, 0.1);
+
+    border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+
+/* =========================================================
+   COMPLETED TICKET
+========================================================= */
+
+.history-ticket {
+    border-color: rgba(148, 163, 184, 0.18);
+}
+
+.completed-banner {
+    margin-top: 18px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 11px 14px;
+
+    border-radius: 10px;
+
+    background: rgba(148, 163, 184, 0.07);
+
+    border: 1px solid rgba(148, 163, 184, 0.12);
+
+    color: #aeb7c7;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.completed-banner svg {
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   TICKET PAGE TOOLBAR
+========================================================= */
+
+.ticket-page-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    margin-bottom: 18px;
+
+    padding: 14px 17px;
+
+    border-radius: 14px;
+
+    background: rgba(8, 14, 22, 0.58);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    backdrop-filter: blur(12px);
+}
+
+.ticket-page-toolbar > div {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.ticket-page-toolbar strong {
+    font-size: 22px;
+    color: #ffffff;
+}
+
+.ticket-page-toolbar span {
+    color: #9aa6b8;
+    font-size: 13px;
+}
+
+.refresh-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9px;
+
+    padding: 9px 13px;
+
+    background: rgba(255, 255, 255, 0.05);
+    color: #e8edf5;
+
+    cursor: pointer;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    transition: 0.2s ease;
+}
+
+.refresh-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.refresh-button svg {
+    transition: transform 0.3s ease;
+}
+
+.refresh-button:hover svg {
+    transform: rotate(180deg);
+}
+
+
+/* =========================================================
+   TICKET LIST
+========================================================= */
+
+.ticket-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    width: 100%;
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+.nav button {
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .ticket-actions {
+        justify-content: flex-start;
+    }
+
+    .delete-ticket {
+        padding: 8px 11px;
+    }
+
+}
+
+
+@media (max-width: 760px) {
+
+    .ticket-page-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .ticket-page-toolbar > div {
+        justify-content: space-between;
+    }
+
+    .refresh-button {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .journey-top {
+        gap: 12px;
+    }
+
+    .ticket-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .delete-ticket {
+        flex: 1;
+    }
+
+}
+
+
+@media (max-width: 520px) {
+
+    .ticket-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .confirmed {
+        justify-content: center;
+    }
+
+    .delete-ticket {
+        width: 100%;
+    }
+
+    .completed-banner {
+        font-size: 12px;
+    }
+
+}

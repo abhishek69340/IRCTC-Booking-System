@@ -6,8 +6,8 @@ import com.IRCTC.IRCTC.BackEnd.IrctcService.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,31 +18,127 @@ public class TicketController {
 
     private final TicketService ticketService;
 
-    @PostMapping("/book")
-    public ResponseEntity<Ticket> bookTicket(@RequestBody BookingRequestDTO request) {
-        System.out.println("Received Booking Request: " + request);
-        return new ResponseEntity<>(ticketService.bookTicket(request), HttpStatus.CREATED);
+    /*
+     * ============================================================
+     * BOOK TICKET
+     * ============================================================
+     *
+     * Supports:
+     *
+     * POST /api/v1/tickets
+     * POST /api/v1/tickets/book
+     *
+     * This keeps the backend compatible with both versions
+     * of the frontend.
+     */
+    @PostMapping({
+            "",
+            "/book"
+    })
+    public ResponseEntity<Ticket> bookTicket(
+            @RequestBody BookingRequestDTO request
+    ) {
+
+        Ticket ticket = ticketService.bookTicket(request);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ticket);
     }
 
+
+    /*
+     * ============================================================
+     * ACTIVE TICKETS
+     * ============================================================
+     *
+     * GET /api/v1/tickets/active
+     */
     @GetMapping("/active")
     public ResponseEntity<List<Ticket>> getActiveTickets() {
-        return ResponseEntity.ok(ticketService.getActiveTickets());
+
+        return ResponseEntity.ok(
+                ticketService.getActiveTickets()
+        );
     }
 
+
+    /*
+     * ============================================================
+     * TICKET HISTORY
+     * ============================================================
+     *
+     * GET /api/v1/tickets/history
+     */
     @GetMapping("/history")
-    public ResponseEntity<List<Ticket>> getInactiveTickets() {
-        return ResponseEntity.ok(ticketService.getInactiveTickets());
+    public ResponseEntity<List<Ticket>> getHistoryTickets() {
+
+        return ResponseEntity.ok(
+                ticketService.getInactiveTickets()
+        );
     }
 
-    @GetMapping("/{pnr}")
-    public ResponseEntity<Ticket> getTicketByPnr(@PathVariable String pnr) {
-        String normalizedPnr = pnr == null ? "" : pnr.trim();
+
+    /*
+     * ============================================================
+     * PNR STATUS
+     * ============================================================
+     *
+     * GET /api/v1/tickets/pnr/{pnr}
+     *
+     * Example:
+     *
+     * GET /api/v1/tickets/pnr/9867319982
+     */
+    @GetMapping("/pnr/{pnr}")
+    public ResponseEntity<Ticket> getTicketByPnr(
+            @PathVariable String pnr
+    ) {
+
+        String normalizedPnr =
+                pnr == null
+                        ? ""
+                        : pnr.trim();
+
         if (!normalizedPnr.matches("\\d{10}")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "PNR must be exactly 10 digits");
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "PNR must be exactly 10 digits"
+            );
         }
-        return ticketService.findTicketByPnr(normalizedPnr)
+
+        return ticketService
+                .findTicketByPnr(normalizedPnr)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Ticket not found for PNR: " + normalizedPnr));
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Ticket not found for PNR: "
+                                        + normalizedPnr
+                        )
+                );
+    }
+
+
+    /*
+     * ============================================================
+     * DELETE TICKET
+     * ============================================================
+     *
+     * DELETE /api/v1/tickets/{ticketId}
+     *
+     * Example:
+     *
+     * DELETE /api/v1/tickets/4
+     */
+    @DeleteMapping("/{ticketId}")
+    public ResponseEntity<Void> deleteTicket(
+            @PathVariable Long ticketId
+    ) {
+
+        ticketService.deleteTicket(ticketId);
+
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,46 +1,112 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://irctc-booking-system-production.up.railway.app/api/v1/tickets'
+const API_BASE_URL =
+    import.meta.env.VITE_API_BASE_URL ||
+    'https://YOUR-RAILWAY-BACKEND.up.railway.app'
 
-async function request(url, options = {}) {
-  const response = await fetch(url, {
-    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
-    ...options
-  })
+/*
+ * Change only the endpoint paths below if your
+ * Spring Boot controller uses different mappings.
+ */
 
-  const text = await response.text()
-  let data = null
-  try {
-    data = text ? JSON.parse(text) : null
-  } catch {
-    data = text
-  }
+async function request(
+    endpoint,
+    options = {}
+) {
+  const response = await fetch(
+      `${API_BASE_URL}${endpoint}`,
+      {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(options.headers || {})
+        }
+      }
+  )
+
+  const contentType =
+      response.headers.get('content-type') || ''
+
+  const data = contentType.includes(
+      'application/json'
+  )
+      ? await response.json()
+      : await response.text()
 
   if (!response.ok) {
     const message =
-      data?.message ||
-      data?.error ||
-      (typeof data === 'string' && data) ||
-      `Request failed (${response.status})`
+        typeof data === 'string'
+            ? data
+            : data?.message ||
+            data?.error ||
+            `Request failed with status ${response.status}`
+
     throw new Error(message)
   }
 
   return data
 }
 
-export function bookTicket(payload) {
-  return request(`${API_BASE}/book`, {
-    method: 'POST',
-    body: JSON.stringify(payload)
-  })
+/* =========================================================
+   BOOK TICKET
+========================================================= */
+
+export async function bookTicket(ticketData) {
+  return request(
+      '/api/v1/tickets',
+      {
+        method: 'POST',
+        body: JSON.stringify(ticketData)
+      }
+  )
 }
 
-export function getActiveTickets() {
-  return request(`${API_BASE}/active`)
+/* =========================================================
+   ACTIVE TICKETS
+========================================================= */
+
+export async function getActiveTickets() {
+  return request(
+      '/api/v1/tickets/active',
+      {
+        method: 'GET'
+      }
+  )
 }
 
-export function getHistoryTickets() {
-  return request(`${API_BASE}/history`)
+/* =========================================================
+   HISTORY TICKETS
+========================================================= */
+
+export async function getHistoryTickets() {
+  return request(
+      '/api/v1/tickets/history',
+      {
+        method: 'GET'
+      }
+  )
 }
 
-export function getTicketByPnr(pnr) {
-  return request(`${API_BASE}/${encodeURIComponent(pnr)}`)
+/* =========================================================
+   PNR
+========================================================= */
+
+export async function getTicketByPnr(pnr) {
+  return request(
+      `/api/v1/tickets/pnr/${encodeURIComponent(pnr)}`,
+      {
+        method: 'GET'
+      }
+  )
+}
+
+/* =========================================================
+   DELETE TICKET
+========================================================= */
+
+export async function deleteTicket(ticketId) {
+  return request(
+      `/api/v1/tickets/${ticketId}`,
+      {
+        method: 'DELETE'
+      }
+  )
 }

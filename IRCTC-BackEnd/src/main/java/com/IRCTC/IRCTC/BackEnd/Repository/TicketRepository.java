@@ -13,22 +13,89 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TicketRepository extends JpaRepository<Ticket, Long> {
+public interface TicketRepository
+        extends JpaRepository<Ticket, Long> {
 
-    @EntityGraph(attributePaths = "passengers")
-    Optional<Ticket> findByPnrNumber(String pnrNumber);
 
-    // Active Tickets (Date/time in future)
-    @EntityGraph(attributePaths = "passengers")
-    @Query("SELECT t FROM Ticket t WHERE t.journeyDate > :currentDate OR " +
-            "(t.journeyDate = :currentDate AND t.departureTime >= :currentTime)")
-    List<Ticket> findActiveTickets(@Param("currentDate") LocalDate currentDate,
-                                   @Param("currentTime") LocalTime currentTime);
+    /*
+     * ============================================================
+     * FIND BY PNR
+     * ============================================================
+     */
 
-    // Inactive/History Tickets (Date/time in past)
-    @EntityGraph(attributePaths = "passengers")
-    @Query("SELECT t FROM Ticket t WHERE t.journeyDate < :currentDate OR " +
-            "(t.journeyDate = :currentDate AND t.departureTime < :currentTime)")
-    List<Ticket> findInactiveTickets(@Param("currentDate") LocalDate currentDate,
-                                     @Param("currentTime") LocalTime currentTime);
+    @EntityGraph(
+            attributePaths = "passengers"
+    )
+    Optional<Ticket> findByPnrNumber(
+            String pnrNumber
+    );
+
+
+    /*
+     * ============================================================
+     * ACTIVE TICKETS
+     * ============================================================
+     *
+     * Journey date is future
+     *
+     * OR
+     *
+     * Journey date is today and departure time
+     * has not passed.
+     */
+    @EntityGraph(
+            attributePaths = "passengers"
+    )
+    @Query("""
+            SELECT t
+            FROM Ticket t
+            WHERE t.journeyDate > :currentDate
+               OR (
+                    t.journeyDate = :currentDate
+                    AND t.departureTime >= :currentTime
+               )
+            ORDER BY t.journeyDate ASC,
+                     t.departureTime ASC
+            """)
+    List<Ticket> findActiveTickets(
+            @Param("currentDate")
+            LocalDate currentDate,
+
+            @Param("currentTime")
+            LocalTime currentTime
+    );
+
+
+    /*
+     * ============================================================
+     * HISTORY TICKETS
+     * ============================================================
+     *
+     * Journey date is in the past
+     *
+     * OR
+     *
+     * Journey is today but departure time has passed.
+     */
+    @EntityGraph(
+            attributePaths = "passengers"
+    )
+    @Query("""
+            SELECT t
+            FROM Ticket t
+            WHERE t.journeyDate < :currentDate
+               OR (
+                    t.journeyDate = :currentDate
+                    AND t.departureTime < :currentTime
+               )
+            ORDER BY t.journeyDate DESC,
+                     t.departureTime DESC
+            """)
+    List<Ticket> findInactiveTickets(
+            @Param("currentDate")
+            LocalDate currentDate,
+
+            @Param("currentTime")
+            LocalTime currentTime
+    );
 }

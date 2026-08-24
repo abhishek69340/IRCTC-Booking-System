@@ -17,19 +17,30 @@ public class Passenger {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long passengerId;
 
+
+    /*
+     * Many passengers belong to one ticket.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ticket_id", nullable = false)
+    @JoinColumn(
+            name = "ticket_id",
+            nullable = false
+    )
     @JsonIgnore
     private Ticket ticket;
+
 
     @Column(nullable = false)
     private String name;
 
+
     @Column(nullable = false)
     private Integer age;
 
+
     @Column(nullable = false)
     private String gender;
+
 
     private String berthPreference;
 }

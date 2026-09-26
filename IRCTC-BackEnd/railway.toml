@@ -1,3 +1,6 @@
+[variables]
+NIXPACKS_JDK_VERSION = "21"
+
 [build]
 builder = "NIXPACKS"
 buildCommand = "./mvnw clean package -DskipTests"
